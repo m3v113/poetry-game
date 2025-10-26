@@ -1,17 +1,22 @@
+import os
 from pathlib import Path
+from dotenv import load_dotenv, find_dotenv
 
-# API Keys
-FISH_AUDIO_API_KEY = 'eca51db39496421785ed421cd07278f9'
-ANTHROPIC_API_KEY = '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'
+load_dotenv(find_dotenv())
+
+FISH_AUDIO_API_KEY = os.getenv('FISH_AUDIO_API_KEY')
+ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY')
+
+if not FISH_AUDIO_API_KEY or not ANTHROPIC_API_KEY:
+    raise RuntimeError("Missing API keys: set FISH_AUDIO_API_KEY and ANTHROPIC_API_KEY in environment or .env")
 
 # Endpoints
 FISH_AUDIO_ENDPOINT = 'https://api.fish.audio/v1/tts'
 
-# Directories
+
 TEMP_DIR = Path("temp_audio")
 TEMP_DIR.mkdir(exist_ok=True)
 
-# Voice model mapping (name -> ID)
 VOICE_MODELS = {
     "poem": "2253ebf60c844c36addfd8939f12e5c2",
     "poem2": "b66ab2250cc840e1974c53ffa0196d4b",
