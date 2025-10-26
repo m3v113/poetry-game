@@ -80,12 +80,34 @@ export default function FridgeMagnetPoetry() {
 
       <div className="max-w-4xl mx-auto p-8">
         
-        <div className="flex flex-col items-center gap-8">
+        
+        <div className="flex items-start justify-center gap-8">
+          {/* Word bank on the left side */}
+          <div className="w-64 bg-white rounded-xl p-6 shadow-xl">
+            <h2 className="text-xl font-bold text-gray-800 mb-4">Word Magnets</h2>
+            <div className="flex flex-wrap gap-3 justify-center">
+              {availableMagnets.map((magnet) => (
+                <div
+                  key={magnet.id}
+                  draggable={!magnet.onFridge}
+                  onDragStart={(e) => !magnet.onFridge && handleDragStart(e, magnet, false)}
+                  className={`px-3 py-1.5 rounded-md shadow-md font-semibold border-2 select-none transition ${
+                    magnet.onFridge 
+                      ? 'bg-gray-200 text-gray-400 border-gray-300 cursor-not-allowed opacity-50' 
+                      : 'bg-white text-gray-800 border-gray-300 cursor-move hover:shadow-lg hover:scale-105'
+                  }`}
+                >
+                  {magnet.text}
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* Fridge */}
           <div className="relative">
-            <div className="relative w-96 h-[500px] bg-gradient-to-br from-slate-300 to-slate-400 rounded-3xl shadow-2xl border-8 border-slate-500">
+            <div className="relative w-[28rem] h-[600px] bg-gradient-to-br from-slate-300 to-slate-400 rounded-3xl shadow-2xl border-8 border-slate-500">
               {/* Top freezer section */}
-              <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-br from-slate-200 to-slate-300 rounded-t-2xl border-b-4 border-slate-400">
+              <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-br from-slate-400 to-slate-1000 rounded-t-4xl border-b-24 border-slate-400">
                 <div className="absolute top-4 right-4 w-4 h-14 bg-slate-500 rounded-full shadow-inner"></div>
               </div>
 
@@ -123,27 +145,6 @@ export default function FridgeMagnetPoetry() {
 
             {/* Floor shadow */}
             <div className="absolute -bottom-2 left-8 right-8 h-4 bg-black opacity-20 blur-xl rounded-full"></div>
-          </div>
-
-          {/* Word bank below fridge */}
-          <div className="w-full max-w-2xl bg-white rounded-xl p-6 shadow-xl">
-            <h2 className="text-xl font-bold text-gray-800 mb-4">Word Magnets</h2>
-            <div className="flex flex-wrap gap-3 justify-center">
-              {availableMagnets.map((magnet) => (
-                <div
-                  key={magnet.id}
-                  draggable={!magnet.onFridge}
-                  onDragStart={(e) => !magnet.onFridge && handleDragStart(e, magnet, false)}
-                  className={`px-3 py-1.5 rounded-md shadow-md font-semibold border-2 select-none transition ${
-                    magnet.onFridge 
-                      ? 'bg-gray-200 text-gray-400 border-gray-300 cursor-not-allowed opacity-50' 
-                      : 'bg-white text-gray-800 border-gray-300 cursor-move hover:shadow-lg hover:scale-105'
-                  }`}
-                >
-                  {magnet.text}
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       </div>
