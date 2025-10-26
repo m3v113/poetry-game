@@ -1,31 +1,67 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { db } from '../firebase'; // adjust this path if needed
+import { doc, getDoc } from 'firebase/firestore';
 
 export default function FridgeMagnetPoetry() {
-  const wordBank = [
-    'love', 'dream', 'whisper', 'moon', 'dance', 'sing', 'wild', 'heart',
-    'shadow', 'light', 'ocean', 'fire', 'soft', 'gentle', 'storm', 'peace',
-    'night', 'day', 'wonder', 'magic'
-  ];
-
+  const [wordBank, setWordBank] = useState([]);
   const [fridgeMagnets, setFridgeMagnets] = useState([]);
-  const [availableMagnets, setAvailableMagnets] = useState(
-    wordBank.map((word, index) => ({ id: `word-${index}`, text: word, onFridge: false }))
-  );
+  const [availableMagnets, setAvailableMagnets] = useState([]);
   const [draggedMagnet, setDraggedMagnet] = useState(null);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
 
+  // 🔥 Fetch categorized words from Firestore
+  useEffect(() => {
+    const fetchWords = async () => {
+      try {
+        const docRef = doc(db, 'wordCategories', 'categorizedWords');
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+
+          // Helper to randomly sample N items from an array
+          const getRandomSample = (arr, n) =>
+            arr.sort(() => 0.5 - Math.random()).slice(0, n);
+
+          // Mix random nouns, verbs, adjectives
+          const randomWords = [
+            ...getRandomSample(data.nouns || [], 5),
+            ...getRandomSample(data.verbs || [], 5),
+            ...getRandomSample(data.adjectives || [], 5),
+          ];
+
+          setWordBank(randomWords);
+
+          // Turn words into draggable magnets
+          setAvailableMagnets(
+            randomWords.map((word, index) => ({
+              id: `word-${index}`,
+              text: word,
+              onFridge: false,
+            }))
+          );
+        } else {
+          console.warn('⚠️ No "categorizedWords" document found in Firestore.');
+        }
+      } catch (error) {
+        console.error('Error fetching words:', error);
+      }
+    };
+
+    fetchWords();
+  }, []);
+
+  // 🧲 Drag-and-drop logic
   const handleDragStart = (e, magnet, fromFridge = false) => {
     const rect = e.target.getBoundingClientRect();
     setOffset({
       x: e.clientX - rect.left,
-      y: e.clientY - rect.top
+      y: e.clientY - rect.top,
     });
     setDraggedMagnet({ ...magnet, fromFridge });
   };
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
-  };
+  const handleDragOver = (e) => e.preventDefault();
 
   const handleDropOnFridge = (e) => {
     e.preventDefault();
@@ -35,32 +71,30 @@ export default function FridgeMagnetPoetry() {
     let x = e.clientX - fridgeRect.left - offset.x;
     let y = e.clientY - fridgeRect.top - offset.y;
 
-    // Keep magnets within bounds
+    // Keep magnets within fridge bounds
     x = Math.max(0, Math.min(x, fridgeRect.width - 100));
     y = Math.max(0, Math.min(y, fridgeRect.height - 40));
 
     if (draggedMagnet.fromFridge) {
-      setFridgeMagnets(fridgeMagnets.map(m => 
-        m.id === draggedMagnet.id ? { ...m, x, y } : m
-      ));
+      setFridgeMagnets((prev) =>
+        prev.map((m) => (m.id === draggedMagnet.id ? { ...m, x, y } : m))
+      );
     } else {
-      setFridgeMagnets([...fridgeMagnets, { 
-        ...draggedMagnet, 
-        x, 
-        y 
-      }]);
-      setAvailableMagnets(availableMagnets.map(m =>
-        m.id === draggedMagnet.id ? { ...m, onFridge: true } : m
-      ));
+      setFridgeMagnets((prev) => [...prev, { ...draggedMagnet, x, y }]);
+      setAvailableMagnets((prev) =>
+        prev.map((m) =>
+          m.id === draggedMagnet.id ? { ...m, onFridge: true } : m
+        )
+      );
     }
     setDraggedMagnet(null);
   };
 
   const removeMagnetFromFridge = (id) => {
-    setFridgeMagnets(fridgeMagnets.filter(m => m.id !== id));
-    setAvailableMagnets(availableMagnets.map(m =>
-      m.id === id ? { ...m, onFridge: false } : m
-    ));
+    setFridgeMagnets((prev) => prev.filter((m) => m.id !== id));
+    setAvailableMagnets((prev) =>
+      prev.map((m) => (m.id === id ? { ...m, onFridge: false } : m))
+    );
   };
 
   return (
@@ -71,36 +105,44 @@ export default function FridgeMagnetPoetry() {
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold text-gray-800">Fridge Magnet Poetry</h1>
             <div className="flex gap-6">
-              <button className="text-gray-700 hover:text-gray-900 font-semibold">Past Poems</button>
-              <button className="text-gray-700 hover:text-gray-900 font-semibold">Feed</button>
+              <button className="text-gray-700 hover:text-gray-900 font-semibold">
+                Past Poems
+              </button>
+              <button className="text-gray-700 hover:text-gray-900 font-semibold">
+                Feed
+              </button>
             </div>
           </div>
         </div>
       </nav>
 
       <div className="max-w-4xl mx-auto p-8">
-        
-        
         <div className="flex items-start justify-center gap-8">
           {/* Word bank on the left side */}
           <div className="w-64 bg-white rounded-xl p-6 shadow-xl">
             <h2 className="text-xl font-bold text-gray-800 mb-4">Word Magnets</h2>
-            <div className="flex flex-wrap gap-3 justify-center">
-              {availableMagnets.map((magnet) => (
-                <div
-                  key={magnet.id}
-                  draggable={!magnet.onFridge}
-                  onDragStart={(e) => !magnet.onFridge && handleDragStart(e, magnet, false)}
-                  className={`px-3 py-1.5 rounded-md shadow-md font-semibold border-2 select-none transition ${
-                    magnet.onFridge 
-                      ? 'bg-gray-200 text-gray-400 border-gray-300 cursor-not-allowed opacity-50' 
-                      : 'bg-white text-gray-800 border-gray-300 cursor-move hover:shadow-lg hover:scale-105'
-                  }`}
-                >
-                  {magnet.text}
-                </div>
-              ))}
-            </div>
+            {availableMagnets.length > 0 ? (
+              <div className="flex flex-wrap gap-3 justify-center">
+                {availableMagnets.map((magnet) => (
+                  <div
+                    key={magnet.id}
+                    draggable={!magnet.onFridge}
+                    onDragStart={(e) =>
+                      !magnet.onFridge && handleDragStart(e, magnet, false)
+                    }
+                    className={`px-3 py-1.5 rounded-md shadow-md font-semibold border-2 select-none transition ${
+                      magnet.onFridge
+                        ? 'bg-gray-200 text-gray-400 border-gray-300 cursor-not-allowed opacity-50'
+                        : 'bg-white text-gray-800 border-gray-300 cursor-move hover:shadow-lg hover:scale-105'
+                    }`}
+                  >
+                    {magnet.text}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-500 text-center">Loading words...</p>
+            )}
           </div>
 
           {/* Fridge */}
@@ -112,13 +154,13 @@ export default function FridgeMagnetPoetry() {
               </div>
 
               {/* Main fridge door - droppable area */}
-              <div 
+              <div
                 className="absolute top-44 left-0 right-0 bottom-0 bg-gradient-to-br from-slate-200 to-slate-300 rounded-b-2xl"
                 onDragOver={handleDragOver}
                 onDrop={handleDropOnFridge}
               >
                 <div className="absolute top-16 right-4 w-4 h-20 bg-slate-500 rounded-full shadow-inner"></div>
-                
+
                 {/* Magnets on fridge */}
                 {fridgeMagnets.map((magnet) => (
                   <div
