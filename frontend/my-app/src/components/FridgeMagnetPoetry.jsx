@@ -30,8 +30,8 @@ export default function FridgeMagnetPoetry({ user }) {
 
           // Mix random nouns, verbs, adjectives
           const randomWords = [
-            ...getRandomSample(data.nouns || [], 4),
-            ...getRandomSample(data.verbs || [], 6),
+            ...getRandomSample(data.nouns || [], 6),
+            ...getRandomSample(data.verbs || [], 4),
             ...getRandomSample(data.adjectives || [], 5),
             ...getRandomSample(data.conjunctionsAndArticles || [], 5)
           ];
