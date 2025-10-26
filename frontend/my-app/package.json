@@ -10,14 +10,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "firebase": "^12.4.0",
     "framer-motion": "^12.23.24",
     "lucide-react": "^0.548.0",
-    "firebase": "^12.4.0",
     "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "react-dom": "^19.1.1",
+    "tailwind": "^4.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
+    "@tailwindcss/postcss": "^4.1.16",
     "@types/react": "^19.1.16",
     "@types/react-dom": "^19.1.9",
     "@vitejs/plugin-react": "^5.0.4",
@@ -28,6 +30,6 @@
     "globals": "^16.4.0",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.16",
-    "vite": "^7.1.7"
+    "vite": "^7.1.12"
   }
 }
