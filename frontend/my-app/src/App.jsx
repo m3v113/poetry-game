@@ -16,8 +16,6 @@ function App() {
     return () => unsubscribe();
   }, []);
 
-  <h1>Welcome to </h1>
-
   if (!user) return <Login onLogin={() => {}} />;
 
   return (
@@ -28,7 +26,7 @@ function App() {
       >
         Logout
       </button>
-      <FridgeMagnetPoetry/>
+      <FridgeMagnetPoetry user={user}/>
     </div>
   );
 }

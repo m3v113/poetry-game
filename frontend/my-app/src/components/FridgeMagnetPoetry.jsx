@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { db } from '../firebase'; // adjust this path if needed
+import { db } from '../firebase';
 import { doc, getDoc, collection, addDoc, getDocs, query, orderBy } from 'firebase/firestore';
 
-export default function FridgeMagnetPoetry() {
+export default function FridgeMagnetPoetry({ user }) {
   const [currentView, setCurrentView] = useState('create'); // 'create' or 'past'
   const [wordBank, setWordBank] = useState([]);
   const [fridgeMagnets, setFridgeMagnets] = useState([]);
@@ -12,8 +12,7 @@ export default function FridgeMagnetPoetry() {
   const [pastPoems, setPastPoems] = useState([]);
   const [saving, setSaving] = useState(false);
 
-  // For now, using a hardcoded userId - replace with actual auth later
-  const userId = 'demo-user';
+  const userId = user.uid;
 
   // 🔥 Fetch categorized words from Firestore
   useEffect(() => {
@@ -69,12 +68,12 @@ export default function FridgeMagnetPoetry() {
       const poemsRef = collection(db, 'users', userId, 'poems');
       const q = query(poemsRef, orderBy('createdAt', 'desc'));
       const querySnapshot = await getDocs(q);
-      
+
       const poems = [];
       querySnapshot.forEach((doc) => {
         poems.push({ id: doc.id, ...doc.data() });
       });
-      
+
       setPastPoems(poems);
     } catch (error) {
       console.error('Error fetching past poems:', error);
@@ -95,7 +94,7 @@ export default function FridgeMagnetPoetry() {
         magnets: fridgeMagnets,
         createdAt: new Date(),
       });
-      
+
       alert('Poem saved successfully! 🎉');
       // Clear the fridge
       setFridgeMagnets([]);
@@ -162,13 +161,13 @@ export default function FridgeMagnetPoetry() {
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold text-gray-800">Fridge Magnet Poetry</h1>
             <div className="flex gap-6">
-              <button 
+              <button
                 onClick={() => setCurrentView('past')}
                 className={`font-semibold ${currentView === 'past' ? 'text-gray-900 border-b-2 border-gray-900' : 'text-gray-700 hover:text-gray-900'}`}
               >
                 Past Poems
               </button>
-              <button 
+              <button
                 onClick={() => setCurrentView('create')}
                 className={`font-semibold ${currentView === 'create' ? 'text-gray-900 border-b-2 border-gray-900' : 'text-gray-700 hover:text-gray-900'}`}
               >
@@ -195,11 +194,10 @@ export default function FridgeMagnetPoetry() {
                       onDragStart={(e) =>
                         !magnet.onFridge && handleDragStart(e, magnet, false)
                       }
-                      className={`px-3 py-1.5 rounded-md shadow-md font-semibold border-2 select-none transition ${
-                        magnet.onFridge
+                      className={`px-3 py-1.5 rounded-md shadow-md font-semibold border-2 select-none transition ${magnet.onFridge
                           ? 'bg-gray-200 text-gray-400 border-gray-300 cursor-not-allowed opacity-50'
                           : 'bg-white text-gray-800 border-gray-300 cursor-move hover:shadow-lg hover:scale-105'
-                      }`}
+                        }`}
                     >
                       {magnet.text}
                     </div>
@@ -259,11 +257,10 @@ export default function FridgeMagnetPoetry() {
               <button
                 onClick={savePoem}
                 disabled={saving || fridgeMagnets.length === 0}
-                className={`px-8 py-3 rounded-lg font-bold text-white shadow-lg transition ${
-                  saving || fridgeMagnets.length === 0
+                className={`px-8 py-3 rounded-lg font-bold text-white shadow-lg transition ${saving || fridgeMagnets.length === 0
                     ? 'bg-gray-400 cursor-not-allowed'
                     : 'bg-blue-500 hover:bg-blue-600 hover:shadow-xl'
-                }`}
+                  }`}
               >
                 {saving ? 'Saving...' : 'Save Poem'}
               </button>
@@ -289,7 +286,7 @@ export default function FridgeMagnetPoetry() {
                       {/* Main fridge door */}
                       <div className="absolute top-44 left-0 right-0 bottom-0 bg-gradient-to-br from-slate-200 to-slate-300 rounded-b-2xl">
                         <div className="absolute top-16 right-4 w-4 h-20 bg-slate-500 rounded-full shadow-inner"></div>
-                        
+
                         {/* Magnets on fridge */}
                         {poem.magnets.map((magnet, idx) => (
                           <div
