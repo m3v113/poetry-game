@@ -137,10 +137,10 @@ export default function FridgeMagnetPoetry({ user }) {
 
           // Custom word mix: 6 nouns, 4 verbs, 5 adjectives, 5 conjunctions
           const randomWords = [
-            ...getRandomSample(data.nouns || [], 6),
-            ...getRandomSample(data.verbs || [], 4),
+            ...getRandomSample(data.nouns || [], 5),
+            ...getRandomSample(data.verbs || [], 6),
             ...getRandomSample(data.adjectives || [], 5),
-            ...getRandomSample(data.conjunctionsAndArticles || [], 5)
+            ...getRandomSample(data.conjunctionsAndArticles || [], 4)
           ];
 
           setWordBank(randomWords);
@@ -340,7 +340,7 @@ export default function FridgeMagnetPoetry({ user }) {
                 onClick={() => setCurrentView('past')}
                 className={`font-semibold ${currentView === 'past' ? 'text-gray-900 border-b-2 border-gray-900' : 'text-gray-700 hover:text-gray-900'}`}
               >
-                Past Poems
+                Gallery
               </button>
               <button 
                 onClick={() => setCurrentView('feed')}
