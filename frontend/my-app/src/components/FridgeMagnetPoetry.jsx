@@ -30,9 +30,10 @@ export default function FridgeMagnetPoetry({ user }) {
 
           // Mix random nouns, verbs, adjectives
           const randomWords = [
-            ...getRandomSample(data.nouns || [], 5),
-            ...getRandomSample(data.verbs || [], 5),
+            ...getRandomSample(data.nouns || [], 4),
+            ...getRandomSample(data.verbs || [], 6),
             ...getRandomSample(data.adjectives || [], 5),
+            ...getRandomSample(data.conjunctionsAndArticles || [], 5)
           ];
 
           setWordBank(randomWords);
@@ -159,7 +160,7 @@ export default function FridgeMagnetPoetry({ user }) {
       <nav className="bg-white shadow-md">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-800">Fridge Magnet Poetry</h1>
+            <h1 className="text-2xl font-bold text-gray-800">🧊</h1>
             <div className="flex gap-6">
               <button
                 onClick={() => setCurrentView('past')}

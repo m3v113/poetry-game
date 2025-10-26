@@ -18,7 +18,7 @@ with open(INPUT_FILE, "r", encoding="utf-8") as f:
     words = [line.strip() for line in f if line.strip()]
 
 # ====== CATEGORIZE ======
-nouns, verbs, adjectives = [], [], []
+nouns, verbs, adjectives, conjunctionsAndArticles = [], [], [], []
 
 for doc in nlp.pipe(words, batch_size=1000):
     token = doc[0]
@@ -26,16 +26,20 @@ for doc in nlp.pipe(words, batch_size=1000):
         nouns.append(token.text)
     elif token.pos_ == "VERB":
         verbs.append(token.text)
-    elif token.pos_ == "ADJ":
-        adjectives.append(token.text)
+    #elif token.pos_ == "ADJ":
+    #    adjectives.append(token.text)
+    #elif token.pos == "CCONJ" or token.pos_ == "SSCONJ" or token.pos_ == "DET":
+    #    conjunctionsAndArticles.append(token.text)
 
 print(f"Categorized ✅  Nouns: {len(nouns)}, Verbs: {len(verbs)}, Adjectives: {len(adjectives)}")
+#, Conjunctions & Articles: {len(conjunctionsAndArticles)}
 
 # ====== UPLOAD TO FIRESTORE ======
 data = {
     "nouns": nouns,
     "verbs": verbs,
-    "adjectives": adjectives
+    "adjectives": adjectives,
+    "conjunctionsAndArticles": ["the", "and", "is", "in", "on", "at", "with", "a", "an", "to"]
 }
 db.collection("wordCategories").document("categorizedWords").set(data)
 
