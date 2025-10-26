@@ -64,9 +64,21 @@ export default function FridgeMagnetPoetry() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100 p-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center">Fridge Magnet Poetry</h1>
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100">
+      {/* Navigation Bar */}
+      <nav className="bg-white shadow-md">
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-bold text-gray-800">Fridge Magnet Poetry</h1>
+            <div className="flex gap-6">
+              <button className="text-gray-700 hover:text-gray-900 font-semibold">Past Poems</button>
+              <button className="text-gray-700 hover:text-gray-900 font-semibold">Feed</button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div className="max-w-4xl mx-auto p-8">
         
         <div className="flex flex-col items-center gap-8">
           {/* Fridge */}
