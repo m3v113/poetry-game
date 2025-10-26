@@ -3,14 +3,11 @@ from anthropic import Anthropic
 from fastapi import HTTPException
 from app.core.config import ANTHROPIC_API_KEY
 from app.models.schemas import PoemAnalysisRequest, PoemAnalysisResponse
-from dotenv import load_dotenv, find_dotenv
-import os
-load_dotenv
+
 class AnalysisService:
     """Poem analysis service using Claude AI"""
     
     def __init__(self):
-        ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY')
         self.client = Anthropic(api_key=ANTHROPIC_API_KEY)
     
     async def analyze_poem(self, request: PoemAnalysisRequest) -> dict:
@@ -21,14 +18,14 @@ class AnalysisService:
             request: PoemAnalysisRequest with the poem text
             
         Returns:
-            dict: Analysis results with score, strengths, improvements, etc.
+            dict: Analysis results with score, strengths, improvements, nonchalant etc
         """
         try:
             print(f"Analyzing poem: {request.text}")
             
             # Call Claude API
             message = self.client.messages.create(
-                model="claude-sonnet-4-20250514",
+                model="claude-sonnet-4-5-20250929",
                 max_tokens=1000,
                 messages=[{
                     "role": "user",

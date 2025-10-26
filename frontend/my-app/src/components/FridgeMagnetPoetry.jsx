@@ -860,7 +860,7 @@ export default function FridgeMagnetPoetry({ user }) {
                           </>
                         ) : (
                           <>
-                            <span>🔊</span> Play
+                            Play
                           </>
                         )}
                       </button>
@@ -933,7 +933,7 @@ export default function FridgeMagnetPoetry({ user }) {
                         </>
                       ) : (
                         <>
-                          <span>🔊</span> Play
+                          Play
                         </>
                       )}
                     </button>
