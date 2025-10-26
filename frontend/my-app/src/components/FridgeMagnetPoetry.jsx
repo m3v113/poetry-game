@@ -166,7 +166,7 @@ export default function FridgeMagnetPoetry({ user }) {
                 onClick={() => setCurrentView('past')}
                 className={`font-semibold ${currentView === 'past' ? 'text-gray-900 border-b-2 border-gray-900' : 'text-gray-700 hover:text-gray-900'}`}
               >
-                Past Poems
+                Gallery
               </button>
               <button
                 onClick={() => setCurrentView('create')}
